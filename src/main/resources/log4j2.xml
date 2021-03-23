@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- status表示log4j2本身日志的级别,用于指定log4j自动重新配置的监测间隔时间，单位是s,最小是5s -->
+<Configuration status="INFO" monitorInterval="120">
+    <properties>
+        <property name="PROJECT_NAME">${application.name}</property>
+        <property name="ACCESS_LOG_HOME">/var/logs/${application.name}/access</property>
+        <property name="RUNTIME_LOG_HOME">/var/logs/${application.name}</property>
+    </properties>
+
+    <Appenders>
+        <!-- 用于打印控制台日志 -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <!--输出日志的格式-->
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %-80.80l - %msg%n" />
+            <!--输出level及其以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY" />
+        </Console>
+        <RollingFile name="File"
+                     fileName="${RUNTIME_LOG_HOME}/${PROJECT_NAME}.log"
+                     filePattern="${RUNTIME_LOG_HOME}/backup/${PROJECT_NAME}.%d{yyyyMMdd}.tar.gz">
+            <!--输出日志的格式-->
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %-C{1.}:%L - %msg%n" />
+            <!--输出level及其以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY" />
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="128MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="7">
+                <Delete basePath="${RUNTIME_LOG_HOME}" maxDepth="2">
+                    <IfFileName glob="*/${PROJECT_NAME}*.tar.gz" />
+                    <IfLastModified age="24H" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <!-- 用来打印网关访问日志 -->
+        <RollingRandomAccessFile name="accessFile" immediateFlush="true"
+                                 bufferSize="8192"
+                                 fileName="${ACCESS_LOG_HOME}/../access.log"
+                                 filePattern="${ACCESS_LOG_HOME}/access.%d{yyyyMMddHH}_%i.tar.gz">
+            <Filters>
+                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="%msg%n" />
+            <Policies>
+                <!--interval属性用来指定多久滚动一次，默认是1 hour-->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="128MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="15">
+                <Delete basePath="${ACCESS_LOG_HOME}" maxDepth="2">
+                    <IfFileName glob="*/access.*.zip" />
+                    <IfLastModified age="24H" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <Loggers>
+        <AsyncLogger name="access" additivity="FALSE" level="INFO">
+            <appender-ref ref="accessFile" />
+        </AsyncLogger>
+
+        <root level="ALL">
+            <appender-ref ref="File" />
+            <appender-ref ref="Console" />
+        </root>
+    </Loggers>
+</Configuration>
