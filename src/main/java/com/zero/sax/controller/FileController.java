@@ -22,6 +22,7 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -114,7 +115,7 @@ public class FileController extends BaseController {
         }
         try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(out.getPath()))) {
             OutputStream os = response.getOutputStream();
-            response.setHeader("Content-Disposition", "attachment;filename=" + out.getName());
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(out.getName(), UTF8));
             response.setContentType(request.getServletContext().getMimeType(out.getPath()));
             byte[] buffer = new byte[1024];
             int length = 0;
