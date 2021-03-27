@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 ENV_PATH=$(dirname $0)/../env/env.properties
 if [ -f $ENV_PATH ]; then
@@ -23,16 +23,17 @@ else
   EXEC_JAR=`ls $HOME_DIR/lib/ | grep ".jar"`
 fi
 EXEC_JAR_PATH=$HOME_DIR/lib/$EXEC_JAR
+EXEC_JAR_NAME=${EXEC_JAR%\.jar}
 
-echo "nohup java $JVM_PARAM -jar $EXEC_JAR_PATH $JAVA_PARAM > $LOG_DIR/$EXEC_JAR"-console.log" 2>&1 &"
+echo "nohup java $JVM_PARAM -jar $EXEC_JAR_PATH $JAVA_PARAM > $LOG_DIR/$EXEC_JAR_NAME-console.log 2>&1 &"
 
-nohup java $JVM_PARAM -jar $EXEC_JAR_PATH $JAVA_PARAM > $LOG_DIR/$EXEC_JAR"-console.log" 2>&1 &
+nohup java $JVM_PARAM -jar $EXEC_JAR_PATH $JAVA_PARAM > $LOG_DIR/$EXEC_JAR_NAME"-console.log" 2>&1 &
 pid=$!
-sleep 10s
+sleep 5s
 
 if [ -d /proc/$pid ]; then
   echo $pid > $HOME_DIR/bin/pid
-  echo "launcher $EXEC_JAR success, pid is $pid"
+  echo "launcher $EXEC_JAR_PATH success, pid is $pid"
 else
-  echo "launcher $EXEC_JAR failure."
+  echo "launcher $EXEC_JAR_PATH failure."
 fi

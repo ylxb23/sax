@@ -1,11 +1,17 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 
 HOME_DIR=$(cd `dirname $0; pwd`)
 HOME_DIR=${HOME_DIR%/bin}
 
-pid=`cat $HOME_DIR/bin/pid`
-kill -QUIT $pid
-rm $HOME_DIR/bin/pid
+PID_PATH=$HOME_DIR/bin/pid
 
-echo "Kill pid: $pid"
+if [ -f $PID_PATH ]
+then
+  pid=`cat $PID_PATH`
+  kill -QUIT $pid
+  rm $PID_PATH
+  echo "Kill -QUIT pid: $pid"
+else
+  echo "pid file not exist, path: $PID_PATH"
+fi

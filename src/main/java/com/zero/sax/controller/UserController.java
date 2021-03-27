@@ -63,7 +63,7 @@ public class UserController extends BaseController {
             usr.setDomain(saxProperties.getDomain());
             usr.setPath("/");
             response.addCookie(usr);
-            logger.info("UserSign, user:{}, client:{}", user.getName(), client);
+            logger.info("UserSign, client:{}, user:{}", client, user.getName());
         }
         response.getWriter().println(gson.toJson(SaxResponse.success(res)));
         return;
@@ -84,8 +84,8 @@ public class UserController extends BaseController {
             return ResponseEntity.ok(SaxResponse.success("ok"));
         }
         ClientMeta client = clientMeta(request);
-        logger.info("UserLogout, client:{}", client);
         userService.out(client);
+        logger.info("UserLogout, client:{}", client);
         return ResponseEntity.ok(SaxResponse.success("ok"));
     }
 }

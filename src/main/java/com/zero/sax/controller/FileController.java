@@ -92,6 +92,7 @@ public class FileController extends BaseController {
         if(out == null || out.getStatus() == 2) {
             return ResponseEntity.ok(SaxResponse.badRequest("File Not Exist"));
         }
+        logger.info("ShareFile, client:{}, user:{}, file:{}", client, user, out.getName());
         return ResponseEntity.ok(SaxResponse.success(out));
     }
 
@@ -186,6 +187,7 @@ public class FileController extends BaseController {
             FileUploadDescription res = uploadFile(client, alias, remark, multipartFile);
             String fileName = multipartFile.getName();
             multiFileRes.put(fileName, res);
+            logger.info("UploadFile, client:{}, user:{}, file:{}", client, user, multipartFile.getOriginalFilename());
         });
         return ResponseEntity.ok(SaxResponse.success(multiFileRes));
     }

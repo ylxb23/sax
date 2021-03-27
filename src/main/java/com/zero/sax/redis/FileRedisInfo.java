@@ -3,11 +3,9 @@ package com.zero.sax.redis;
 import com.google.gson.Gson;
 import com.zero.sax.domain.FileDetail;
 import com.zero.sax.domain.FileShareDetail;
-import com.zero.sax.domain.FileWrapper;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.TimeUnit;

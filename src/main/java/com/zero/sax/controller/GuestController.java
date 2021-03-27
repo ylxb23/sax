@@ -64,6 +64,7 @@ public class GuestController extends BaseController {
             String msg = (out == null || out.getName() == null) ? "File Not Exist" : ("File [" + out.getName() + "] Not Exist");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(SaxResponse.badRequest(msg));
         }
+        ClientMeta client = clientMeta(request);
         try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(out.getPath()))) {
             OutputStream os = response.getOutputStream();
             response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(out.getName()));
@@ -74,6 +75,7 @@ public class GuestController extends BaseController {
                 os.write(buffer, 0, length);
             }
             os.flush();
+            logger.info("GetFile, client:{}, file:{}", gson.toJson(client), out.getName());
         } catch (Exception e) {
             logger.error("GetShareFileError, client:{}, smd5:{}", clientMeta(request), smd5, e);
         }
