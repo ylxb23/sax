@@ -9,6 +9,8 @@ import com.zero.sax.redis.FileRedisInfo;
 import com.zero.sax.util.DateUtil;
 import com.zero.sax.util.FileUtil;
 import com.zero.sax.util.MD5Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class FileService {
+
+    private final Logger logger = LoggerFactory.getLogger(FileService.class);
     @Resource
     private SaxProperties saxProperties;
     @Resource
@@ -76,12 +80,13 @@ public class FileService {
         FileShareOut shareOut = new FileShareOut();
         String user = fileRedisInfo.getFileShareUser(smd5);
         if(user == null) {
+            logger.info("GetFileShareInfo, smd5:{}, share info empty.", smd5);
             shareOut.setStatus(2);
             return shareOut;
         }
         FileShareDetail shareDetail = fileRedisInfo.getFileShareDetailInfo(user, smd5);
         if(shareDetail == null) {
-            //
+            logger.info("GetFileShareInfo, smd5:{}, detail empty", smd5);
             shareOut.setStatus(2);
             return null;
         }
@@ -92,14 +97,44 @@ public class FileService {
     public FileOut get(String smd5) {
         String user = fileRedisInfo.getFileShareUser(smd5);
         if(user == null) {
+            logger.info("FileDetailInfoGet, smd5:{}, share info empty.", smd5);
             return null;
         }
         FileShareDetail shareDetail = fileRedisInfo.getFileShareDetailInfo(user, smd5);
         if(shareDetail == null) {
-            //
+            logger.info("FileDetailInfoGet, user:{}, smd5:{}, share detail info empty.", user, smd5);
             return null;
         }
         return download(user, shareDetail.getMd5());
+    }
+
+
+    public boolean delete(String user, String md5) {
+        FileDetail detail = fileRedisInfo.getFileDetail(user, md5);
+        if(detail == null) {
+            logger.info("FileDelete, user:{}, md5:{}, detail empty", user, md5);
+            return true;
+        }
+        // delete file
+        String relatePath = detail.getRelatePath();
+        String path = fileStoragePath(saxProperties.getRoot(), relatePath);
+        File file = new File(path);
+        boolean fileDeleted = true;
+        if(file.exists()) {
+            fileDeleted = file.delete();
+        }
+        // delete share info
+        boolean shareInfoDeleted = true;
+        if(detail.getSmd5() != null && detail.getSmd5().isEmpty()) {
+            shareInfoDeleted = fileRedisInfo.deleteShareInfo(user, detail.getSmd5());
+        }
+        // delete file index
+        boolean indexDeleted = fileRedisInfo.deleteIndexInfo(user, md5);
+        // delete file info
+        boolean infoDeleted = fileRedisInfo.deleteInfo(user, md5);
+        logger.info("FileDelete, user:{}, md5:{}, path:{}, file op:{}, share info op:{}, index op:{}, info op:{}",
+                user, md5, path, fileDeleted, shareInfoDeleted, indexDeleted, infoDeleted);
+        return true;
     }
 
     public FileOut download(String user, String md5) {

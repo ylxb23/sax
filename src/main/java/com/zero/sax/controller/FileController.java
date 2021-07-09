@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -192,6 +193,23 @@ public class FileController extends BaseController {
         return ResponseEntity.ok(SaxResponse.success(multiFileRes));
     }
 
+    @PostMapping(path = "/delete", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<SaxResponse> delete(HttpServletRequest request, @RequestBody FileInfo fileInfo) {
+        if(!isAuthed(request)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(SaxResponse.notAccessed("Not Login"));
+        }
+        ClientMeta client = clientMeta(request);
+        String user = userService.getUserBySession(client);
+        if(user == null || user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(SaxResponse.badRequest("Not allow"));
+        }
+        if(fileInfo == null || !StringUtils.hasLength(fileInfo.getMd5())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(SaxResponse.badRequest("Param not valid"));
+        }
+        boolean flag = fileService.delete(user, fileInfo.getMd5());
+        return ResponseEntity.ok(SaxResponse.success(flag));
+    }
+
     protected FileUploadDescription uploadFile(ClientMeta client, String alias, String remark, MultipartFile file) {
         FileUploadDescription description = new FileUploadDescription();
         String originalFilename = file.getOriginalFilename();
@@ -200,7 +218,7 @@ public class FileController extends BaseController {
             if(size > saxProperties.getMaxFileSize()) {
                 // out of limit
                 logger.warn("You upload file size:{}, out of limit:{}", size, saxProperties.getMaxFileSize());
-                description.setMsg("Your file out of limit");
+                description.setMsg("File size out of limit");
                 description.setResult(2);
                 return description;
             }

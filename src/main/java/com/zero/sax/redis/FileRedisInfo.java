@@ -150,6 +150,24 @@ public class FileRedisInfo {
                 .collect(Collectors.toList());
     }
 
+
+    public boolean deleteShareInfo(String user, String smd5) {
+        String key = userShareFileDetailKey(user);
+        return stringRedisTemplate.boundHashOps(key).delete(smd5) > 0;
+    }
+
+
+    public boolean deleteIndexInfo(String user, String md5) {
+        String key = userFileListKey(user);
+        return stringRedisTemplate.boundZSetOps(key).remove(md5) > 0;
+    }
+
+
+    public boolean deleteInfo(String user, String md5) {
+        String key = userFileDetailKey(user);
+        return stringRedisTemplate.boundHashOps(key).delete(md5) > 0;
+    }
+
     private String fileShareDetailToJson(FileShareDetail detail) {
         return gson.toJson(detail);
     }
