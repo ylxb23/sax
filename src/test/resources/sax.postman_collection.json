@@ -1,0 +1,350 @@
+{
+	"variables": [],
+	"info": {
+		"name": "sax",
+		"_postman_id": "4834b019-4be9-7e35-8312-40e40b8d78f4",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "登陆",
+			"request": {
+				"url": "http://localhost:3333/sax/user/auth",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"zero\",\"pass\":\"zeropass\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "文件上传",
+			"request": {
+				"url": "http://localhost:3333/sax/file/upload",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "sn",
+						"value": "eafd797727bb47f9075e84aeea85e4a5",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "ACG.jpg",
+							"description": "",
+							"type": "file",
+							"src": "ACG_&_00338271-be93-4732-ad56-e9fd4aefc5d7.jpg"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "查看我的文件列表",
+			"request": {
+				"url": {
+					"raw": "http://localhost:3333/sax/file/query?from=2021-01-31&to=2021-07-31&offset=0&limit=20",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"sax",
+						"file",
+						"query"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "2021-01-31",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "to",
+							"value": "2021-07-31",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "offset",
+							"value": "0",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "limit",
+							"value": "20",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "sn",
+						"value": "eafd797727bb47f9075e84aeea85e4a5",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "当前用户下载",
+			"request": {
+				"url": {
+					"raw": "http://localhost:3333/sax/file/download?md5=0ef4e9e6363ff55feac3c7dccf30dad6",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"sax",
+						"file",
+						"download"
+					],
+					"query": [
+						{
+							"key": "md5",
+							"value": "0ef4e9e6363ff55feac3c7dccf30dad6",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "sn",
+						"value": "0eaa664eddd1248b31e5bebf2fb64079",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "文件分享",
+			"request": {
+				"url": "http://localhost:3333/sax/file/share",
+				"method": "POST",
+				"header": [
+					{
+						"key": "sn",
+						"value": "0eaa664eddd1248b31e5bebf2fb64079",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"limit\":\"-\",\"md5\":\"e23aef270d615b2f36189faad9701188\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "下载分享的文件",
+			"request": {
+				"url": {
+					"raw": "http://localhost:3333/sax/file/get?smd5=7328a72c04b50063465515e0ed93fcbb",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"sax",
+						"file",
+						"get"
+					],
+					"query": [
+						{
+							"key": "smd5",
+							"value": "7328a72c04b50063465515e0ed93fcbb",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "sn",
+						"value": "0eaa664eddd1248b31e5bebf2fb64079",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "下载分享的文件2",
+			"request": {
+				"url": "http://localhost:3333/sax/file/get/de93d1fa4da5fff6055b619751a87f8e",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "查看我的分享记录",
+			"request": {
+				"url": {
+					"raw": "http://localhost:3333/sax/file/share/history?from=2021-01-31&to=2021-07-31&offset=0&limit=20",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"sax",
+						"file",
+						"share",
+						"history"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "2021-01-31",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "to",
+							"value": "2021-07-31",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "offset",
+							"value": "0",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "limit",
+							"value": "20",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "sn",
+						"value": "eafd797727bb47f9075e84aeea85e4a5",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "文件删除",
+			"request": {
+				"url": "http://localhost:3333/sax/file/delete",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "sn",
+						"value": "eafd797727bb47f9075e84aeea85e4a5",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"md5\":\"fa02cacc127ada0345cecce0978d1ff5\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
